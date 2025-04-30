@@ -213,20 +213,24 @@ namespace Eticaret.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            var categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         // POST: Admin/ProductEdit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProductEdit(int id, Product product)
+        public async Task<IActionResult> ProductEdit(int id, [Bind("Id,Name,CategoryId,Price,Stock,Description,CreatedDate")] Product product, IFormFile Image)
         {
             var checkResult = CheckAdmin();
             if (checkResult != null)
@@ -237,23 +241,57 @@ namespace Eticaret.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                System.Diagnostics.Debug.WriteLine($"Form verisi: Id={id}, CategoryId={Request.Form["CategoryId"]}, Name={product.Name}, Price={product.Price}");
+
+                // Kategori kontrolü
+                var categoryId = 0;
+                if (int.TryParse(Request.Form["CategoryId"], out categoryId))
                 {
-                    var existingProduct = await _context.Products.FindAsync(id);
+                    product.CategoryId = categoryId;
+                }
 
-                    existingProduct.Name = product.Name;
-                    existingProduct.Description = product.Description;
-                    existingProduct.Price = product.Price;
-                    existingProduct.Stock = product.Stock;
-                    existingProduct.CategoryId = product.CategoryId;
+                // ModelState'i temizle ve sadece gerekli alanları kontrol et
+                ModelState.Clear();
+                if (string.IsNullOrEmpty(product.Name))
+                    ModelState.AddModelError("Name", "Ürün adı zorunludur");
+                if (product.Price <= 0)
+                    ModelState.AddModelError("Price", "Fiyat 0'dan büyük olmalıdır");
+                if (product.Stock < 0)
+                    ModelState.AddModelError("Stock", "Stok miktarı 0 veya daha büyük olmalıdır");
+                if (product.CategoryId <= 0)
+                    ModelState.AddModelError("CategoryId", "Lütfen bir kategori seçin");
 
-                    // Dosya yükleme işlemi
-                    if (Request.Form.Files.Count > 0)
+                var category = await _context.Categories.FindAsync(product.CategoryId);
+                if (category == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Kategori bulunamadı: {product.CategoryId}");
+                    ModelState.AddModelError("CategoryId", "Seçilen kategori bulunamadı");
+                }
+
+                if (ModelState.IsValid && category != null)
+                {
+                    try
                     {
-                        var file = Request.Form.Files.FirstOrDefault();
-                        if (file != null && file.Length > 0)
+                        var existingProduct = await _context.Products
+                            .Include(p => p.Category)
+                            .FirstOrDefaultAsync(p => p.Id == id);
+
+                        if (existingProduct == null)
+                        {
+                            return NotFound();
+                        }
+
+                        // Mevcut ürünü güncelle
+                        existingProduct.Name = product.Name;
+                        existingProduct.Description = product.Description;
+                        existingProduct.Price = product.Price;
+                        existingProduct.Stock = product.Stock;
+                        existingProduct.CategoryId = product.CategoryId;
+
+                        // Dosya yükleme işlemi
+                        if (Image != null && Image.Length > 0)
                         {
                             // Eski resmi sil
                             if (!string.IsNullOrEmpty(existingProduct.ImageUrl))
@@ -266,40 +304,59 @@ namespace Eticaret.Controllers
                             }
 
                             var uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "images", "products");
-                            if (!Directory.Exists(uploadsFolder))
-                            {
-                                Directory.CreateDirectory(uploadsFolder);
-                            }
+                            Directory.CreateDirectory(uploadsFolder);
 
-                            var uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Image.FileName;
                             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
 
                             using (var fileStream = new FileStream(filePath, FileMode.Create))
                             {
-                                await file.CopyToAsync(fileStream);
+                                await Image.CopyToAsync(fileStream);
                             }
 
                             existingProduct.ImageUrl = "/images/products/" + uniqueFileName;
+                            System.Diagnostics.Debug.WriteLine($"Yeni resim yüklendi: {existingProduct.ImageUrl}");
+                        }
+
+                        await _context.SaveChangesAsync();
+                        System.Diagnostics.Debug.WriteLine("Ürün başarıyla güncellendi");
+                        TempData["SuccessMessage"] = "Ürün başarıyla güncellendi.";
+                        return RedirectToAction(nameof(Products));
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        if (!ProductExists(product.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Güncelleme hatası: {ex.Message}");
+                            throw;
                         }
                     }
-
-                    await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!ProductExists(product.Id))
+                    foreach (var modelState in ModelState.Values)
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        foreach (var error in modelState.Errors)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Validation Error: {error.ErrorMessage}");
+                        }
                     }
                 }
-                return RedirectToAction(nameof(Products));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Hata oluştu: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
+                ModelState.AddModelError("", "Ürün güncellenirken bir hata oluştu: " + ex.Message);
             }
 
-            ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
+            // Hata durumunda kategori listesini tekrar yükle
+            var categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
