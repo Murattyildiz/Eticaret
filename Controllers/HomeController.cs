@@ -37,6 +37,20 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Contact(ContactViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Burada e-posta gönderme işlemi yapılabilir
+            TempData["SuccessMessage"] = "Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.";
+            return RedirectToAction(nameof(Contact));
+        }
+
+        return View(model);
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
