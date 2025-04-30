@@ -1,0 +1,128 @@
+@model IEnumerable<Eticaret.Models.User>
+
+@{
+    ViewData["Title"] = "Kullanıcılar";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Kullanıcılar</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active">Kullanıcılar</li>
+    </ol>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-users me-1"></i>
+            Kullanıcı Listesi
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Telefon</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Rol</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Name</td>
+                            <td>@user.Email</td>
+                            <td>@(user.PhoneNumber ?? "-")</td>
+                            <td>@user.RegisterDate.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                <span class="badge bg-@(user.Role == "Admin" ? "danger" : "primary")">
+                                    @user.Role
+                                </span>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#userDetailsModal-@user.Id">
+                                    <i class="fas fa-eye"></i> Detay
+                                </button>
+
+                                <!-- User Details Modal -->
+                                <div class="modal fade" id="userDetailsModal-@user.Id" tabindex="-1" aria-labelledby="userDetailsModalLabel-@user.Id" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="userDetailsModalLabel-@user.Id">Kullanıcı Detayı</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <dl class="row">
+                                                    <dt class="col-sm-4">ID:</dt>
+                                                    <dd class="col-sm-8">@user.Id</dd>
+
+                                                    <dt class="col-sm-4">Ad Soyad:</dt>
+                                                    <dd class="col-sm-8">@user.Name</dd>
+
+                                                    <dt class="col-sm-4">E-posta:</dt>
+                                                    <dd class="col-sm-8">@user.Email</dd>
+
+                                                    <dt class="col-sm-4">Telefon:</dt>
+                                                    <dd class="col-sm-8">@(user.PhoneNumber ?? "-")</dd>
+
+                                                    <dt class="col-sm-4">Adres:</dt>
+                                                    <dd class="col-sm-8">@(user.Address ?? "-")</dd>
+
+                                                    <dt class="col-sm-4">Kayıt Tarihi:</dt>
+                                                    <dd class="col-sm-8">@user.RegisterDate.ToString("dd.MM.yyyy HH:mm")</dd>
+
+                                                    <dt class="col-sm-4">Rol:</dt>
+                                                    <dd class="col-sm-8">
+                                                        <span class="badge bg-@(user.Role == "Admin" ? "danger" : "primary")">
+                                                            @user.Role
+                                                        </span>
+                                                    </dd>
+                                                </dl>
+
+                                                <div class="mt-3">
+                                                    <h6>Rol Değiştir</h6>
+                                                    <form asp-action="UpdateUserRole" method="post">
+                                                        <input type="hidden" name="userId" value="@user.Id" />
+                                                        <div class="input-group">
+                                                            <select name="role" class="form-select">
+                                                                <option value="User" selected="@(user.Role == "User")">Kullanıcı</option>
+                                                                <option value="Admin" selected="@(user.Role == "Admin")">Admin</option>
+                                                            </select>
+                                                            <button class="btn btn-primary" type="submit">Güncelle</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // DataTable initialization
+        $(document).ready(function () {
+            $('.table').DataTable({
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.4/i18n/tr.json'
+                }
+            });
+        });
+    </script>
+} 

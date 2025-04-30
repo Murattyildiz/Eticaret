@@ -1,0 +1,125 @@
+@model IEnumerable<Eticaret.Models.Order>
+@{
+    ViewData["Title"] = "Admin Panel";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="mt-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Dashboard</li>
+    </ol>
+    
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <h4 class="mb-0">@ViewBag.ProductCount</h4>
+                    <div class="small">Toplam Ürün</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-controller="Admin" asp-action="Products">Ürünleri Görüntüle</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <h4 class="mb-0">@ViewBag.CategoryCount</h4>
+                    <div class="small">Toplam Kategori</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-controller="Admin" asp-action="Categories">Kategorileri Görüntüle</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <h4 class="mb-0">@ViewBag.OrderCount</h4>
+                    <div class="small">Toplam Sipariş</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-controller="Admin" asp-action="Orders">Siparişleri Görüntüle</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">
+                    <h4 class="mb-0">@ViewBag.UserCount</h4>
+                    <div class="small">Toplam Kullanıcı</div>
+                </div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" asp-controller="Admin" asp-action="Users">Kullanıcıları Görüntüle</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Son Siparişler
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="recentOrdersTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Sipariş No</th>
+                            <th>Müşteri</th>
+                            <th>Tarih</th>
+                            <th>Tutar</th>
+                            <th>Durum</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                <td>#@order.Id</td>
+                                <td>@order.User.Name</td>
+                                <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                <td>@order.TotalAmount.ToString("C")</td>
+                                <td>
+                                    @switch (order.Status)
+                                    {
+                                        case "Beklemede":
+                                            <span class="badge bg-warning">Beklemede</span>
+                                            break;
+                                        case "İşleniyor":
+                                            <span class="badge bg-info">İşleniyor</span>
+                                            break;
+                                        case "Tamamlandı":
+                                            <span class="badge bg-success">Tamamlandı</span>
+                                            break;
+                                        case "İptal Edildi":
+                                            <span class="badge bg-danger">İptal Edildi</span>
+                                            break;
+                                        default:
+                                            <span class="badge bg-secondary">@order.Status</span>
+                                            break;
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.Id" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> Detay
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 

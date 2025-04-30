@@ -1,0 +1,52 @@
+@model Eticaret.Models.Category
+
+@{
+    ViewData["Title"] = "Yeni Kategori";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Yeni Kategori</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="Categories">Kategoriler</a></li>
+        <li class="breadcrumb-item active">Yeni Kategori</li>
+    </ol>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-plus me-1"></i>
+            Kategori Bilgileri
+        </div>
+        <div class="card-body">
+            <form asp-action="CategoryCreate" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="Name" class="form-label">Kategori Adı</label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Açıklama</label>
+                    <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Categories" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Listeye Dön
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Kaydet
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

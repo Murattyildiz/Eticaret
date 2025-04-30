@@ -1,0 +1,142 @@
+@model Eticaret.Models.Order
+@{
+    ViewData["Title"] = "Sipariş Detayları";
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Order" asp-action="MyOrders">Siparişlerim</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Sipariş #@Model.Id</li>
+        </ol>
+    </nav>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Sipariş #@Model.Id</h5>
+            <span class="badge bg-light text-dark">@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</span>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6>Sipariş Bilgileri</h6>
+                    <p><strong>Sipariş No:</strong> #@Model.Id</p>
+                    <p><strong>Sipariş Tarihi:</strong> @Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</p>
+                    <p>
+                        <strong>Sipariş Durumu:</strong>
+                        @switch (Model.Status)
+                        {
+                            case "Beklemede":
+                                <span class="badge bg-warning">Beklemede</span>
+                                break;
+                            case "İşleniyor":
+                                <span class="badge bg-info">İşleniyor</span>
+                                break;
+                            case "Tamamlandı":
+                                <span class="badge bg-success">Tamamlandı</span>
+                                break;
+                            case "İptal Edildi":
+                                <span class="badge bg-danger">İptal Edildi</span>
+                                break;
+                            default:
+                                <span class="badge bg-secondary">@Model.Status</span>
+                                break;
+                        }
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h6>Teslimat Bilgileri</h6>
+                    <p><strong>Teslimat Adresi:</strong> @Model.ShippingAddress</p>
+                    <p><strong>Telefon:</strong> @Model.PhoneNumber</p>
+                </div>
+            </div>
+
+            <h6>Sipariş Ürünleri</h6>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ürün</th>
+                            <th>Fiyat</th>
+                            <th>Adet</th>
+                            <th class="text-end">Toplam</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.OrderItems)
+                        {
+                            <tr>
+                                <td>
+                                    <a asp-controller="Product" asp-action="Details" asp-route-id="@item.ProductId">
+                                        @item.Product.Name
+                                    </a>
+                                </td>
+                                <td>@item.UnitPrice.ToString("C")</td>
+                                <td>@item.Quantity</td>
+                                <td class="text-end">@item.TotalPrice.ToString("C")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Ara Toplam:</th>
+                            <th class="text-end">@Model.TotalAmount.ToString("C")</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3" class="text-end">Kargo:</th>
+                            <th class="text-end">Ücretsiz</th>
+                        </tr>
+                        <tr>
+                            <th colspan="3" class="text-end">Toplam:</th>
+                            <th class="text-end text-primary">@Model.TotalAmount.ToString("C")</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Sipariş Takibi</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <ul class="list-group list-group-horizontal-md text-center">
+                        <li class="list-group-item flex-fill 
+                            @(Model.Status != "İptal Edildi" ? "bg-success text-white" : "")">
+                            <i class="fas fa-check-circle mb-2"></i><br>
+                            Sipariş Alındı
+                        </li>
+                        <li class="list-group-item flex-fill 
+                            @(Model.Status == "İşleniyor" || Model.Status == "Tamamlandı" ? "bg-success text-white" : "")">
+                            <i class="fas fa-box mb-2"></i><br>
+                            Hazırlanıyor
+                        </li>
+                        <li class="list-group-item flex-fill
+                            @(Model.Status == "Tamamlandı" ? "bg-success text-white" : "")">
+                            <i class="fas fa-shipping-fast mb-2"></i><br>
+                            Kargoya Verildi
+                        </li>
+                        <li class="list-group-item flex-fill
+                            @(Model.Status == "Tamamlandı" ? "bg-success text-white" : "")">
+                            <i class="fas fa-home mb-2"></i><br>
+                            Teslim Edildi
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+        <a asp-controller="Order" asp-action="MyOrders" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i> Siparişlere Dön
+        </a>
+        <a href="#" class="btn btn-outline-secondary">
+            <i class="fas fa-print me-2"></i> Fatura Yazdır
+        </a>
+    </div>
+</div> 

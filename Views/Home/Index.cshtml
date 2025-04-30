@@ -1,0 +1,108 @@
+﻿@model IEnumerable<Eticaret.Models.Product>
+@{
+    ViewData["Title"] = "Ana Sayfa";
+}
+
+<div class="jumbotron mb-4 p-5 bg-light rounded-3">
+    <div class="container">
+        <h1 class="display-4">Eticaret'e Hoş Geldiniz!</h1>
+        <p class="lead">Online alışverişin en güvenilir adresi. Binlerce ürün, uygun fiyatlar ve hızlı teslimat.</p>
+        <hr class="my-4">
+        <p>Hemen alışverişe başlayın ve fırsatları kaçırmayın!</p>
+        <a class="btn btn-primary btn-lg" asp-controller="Product" asp-action="Index" role="button">Ürünleri Keşfet</a>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-3 mb-4">
+            <div class="feature-box">
+                <i class="fas fa-shipping-fast"></i>
+                <h5>Hızlı Teslimat</h5>
+                <p>24 saat içinde kargoya verilir</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-box">
+                <i class="fas fa-money-bill-wave"></i>
+                <h5>Kapıda Ödeme</h5>
+                <p>Güvenli teslimat seçenekleri</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-box">
+                <i class="fas fa-undo"></i>
+                <h5>Kolay İade</h5>
+                <p>14 gün içinde ücretsiz iade</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4">
+            <div class="feature-box">
+                <i class="fas fa-headset"></i>
+                <h5>7/24 Destek</h5>
+                <p>Müşteri hizmetleri desteği</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <h2 class="mb-4">Öne Çıkan Ürünler</h2>
+    
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card product-card">
+                        @if (!string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                        }
+                        else
+                        {
+                            <img src="~/images/no-image.jpg" class="card-img-top" alt="Ürün görseli bulunamadı">
+                        }
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">@(product.Description?.Length > 100 ? product.Description.Substring(0, 100) + "..." : product.Description)</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between align-items-center">
+                            <span class="product-price">@product.Price.ToString("C")</span>
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">Detaylar</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="text-center mt-4 mb-5">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Tüm Ürünleri Gör</a>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Henüz ürün eklenmemiş.
+        </div>
+    }
+</div>
+
+<div class="container mb-5">
+    <div class="row align-items-center">
+        <div class="col-md-6">
+            <h3>Neden Bizi Tercih Etmelisiniz?</h3>
+            <p>Eticaret olarak müşteri memnuniyetini en üst seviyede tutmak için çalışıyoruz. Geniş ürün yelpazemiz, uygun fiyatlarımız ve hızlı teslimat seçeneklerimizle alışverişi keyifli hale getiriyoruz.</p>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check-circle text-success me-2"></i> Orijinal ürün garantisi</li>
+                <li><i class="fas fa-check-circle text-success me-2"></i> Güvenli alışveriş imkanı</li>
+                <li><i class="fas fa-check-circle text-success me-2"></i> Hızlı ve güvenli teslimat</li>
+                <li><i class="fas fa-check-circle text-success me-2"></i> 7/24 müşteri desteği</li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <img src="https://via.placeholder.com/600x400" alt="Alışveriş" class="img-fluid rounded">
+        </div>
+    </div>
+</div>

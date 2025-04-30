@@ -1,0 +1,78 @@
+@model IEnumerable<Eticaret.Models.Order>
+@{
+    ViewData["Title"] = "Siparişlerim";
+}
+
+<div class="container">
+    <h1 class="mb-4">Siparişlerim</h1>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Sipariş Geçmişi</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Sipariş No</th>
+                                <th>Tarih</th>
+                                <th>Durum</th>
+                                <th>Toplam</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model)
+                            {
+                                <tr>
+                                    <td>#@order.Id</td>
+                                    <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>
+                                        @switch (order.Status)
+                                        {
+                                            case "Beklemede":
+                                                <span class="badge bg-warning">Beklemede</span>
+                                                break;
+                                            case "İşleniyor":
+                                                <span class="badge bg-info">İşleniyor</span>
+                                                break;
+                                            case "Tamamlandı":
+                                                <span class="badge bg-success">Tamamlandı</span>
+                                                break;
+                                            case "İptal Edildi":
+                                                <span class="badge bg-danger">İptal Edildi</span>
+                                                break;
+                                            default:
+                                                <span class="badge bg-secondary">@order.Status</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>@order.TotalAmount.ToString("C")</td>
+                                    <td>
+                                        <a asp-controller="Order" asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i> Detaylar
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-box-open fa-5x mb-4 text-muted"></i>
+            <h3>Henüz Siparişiniz Yok</h3>
+            <p class="lead mb-4">Sipariş geçmişinizde henüz bir sipariş bulunmamaktadır.</p>
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-shopping-bag me-2"></i> Alışverişe Başla
+            </a>
+        </div>
+    }
+</div> 

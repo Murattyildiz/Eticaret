@@ -1,0 +1,106 @@
+@model Eticaret.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Ürünler</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index" asp-route-categoryId="@Model.CategoryId">@Model.Category.Name</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded" alt="@Model.Name">
+            }
+            else
+            {
+                <img src="~/images/no-image.jpg" class="img-fluid rounded" alt="Ürün görseli bulunamadı">
+            }
+        </div>
+        <div class="col-md-6">
+            <h1 class="mb-3">@Model.Name</h1>
+            <h4 class="text-primary mb-4">@Model.Price.ToString("C")</h4>
+            
+            <div class="mb-4">
+                <span class="badge bg-secondary">@Model.Category.Name</span>
+                @if (Model.Stock > 0)
+                {
+                    <span class="badge bg-success ms-2">Stokta</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger ms-2">Stokta Yok</span>
+                }
+            </div>
+            
+            <p class="mb-4">@Model.Description</p>
+            
+            <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                
+                <div class="row g-3 align-items-center mb-4">
+                    <div class="col-auto">
+                        <label for="quantity" class="col-form-label">Adet:</label>
+                    </div>
+                    <div class="col-2">
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" max="@Model.Stock" @(Model.Stock <= 0 ? "disabled" : "") />
+                    </div>
+                    <div class="col-auto">
+                        <span class="form-text">
+                            @if (Model.Stock > 0)
+                            {
+                                <text>@Model.Stock adet stokta</text>
+                            }
+                            else
+                            {
+                                <text>Stokta yok</text>
+                            }
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg" @(Model.Stock <= 0 ? "disabled" : "")>
+                        <i class="fas fa-cart-plus me-2"></i> Sepete Ekle
+                    </button>
+                    <a href="#" class="btn btn-outline-secondary">
+                        <i class="fas fa-heart me-2"></i> Favorilere Ekle
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Ürün Detayları</h3>
+            <div class="card">
+                <div class="card-body">
+                    <p>@Model.Description</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-4">Benzer Ürünler</h3>
+            <div class="row">
+                <!-- Benzer ürünler burada listelenecek -->
+                <div class="col text-center">
+                    <a asp-controller="Product" asp-action="Index" asp-route-categoryId="@Model.CategoryId" class="btn btn-primary">
+                        Daha Fazla Ürün Gör
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

@@ -1,0 +1,98 @@
+@model Eticaret.Models.User
+
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Yeni Hesap Oluştur</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Register" method="post" id="registerForm">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label">Ad Soyad</label>
+                            <input asp-for="Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">E-posta</label>
+                            <input asp-for="Email" class="form-control" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Password" class="form-label">Şifre</label>
+                            <input asp-for="Password" type="password" class="form-control" required />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
+                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+                            <span id="confirmPasswordError" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label">Telefon</label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Adres</label>
+                        <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            <a href="#">Üyelik sözleşmesini</a> ve <a href="#">Gizlilik Politikasını</a> okudum ve kabul ediyorum.
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+                    </div>
+                </form>
+                
+                <hr />
+                <div class="text-center">
+                    <p>Zaten hesabınız var mı? <a asp-action="Login">Giriş Yap</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        $(document).ready(function() {
+            $('#registerForm').submit(function(e) {
+                var password = $('#Password').val();
+                var confirmPassword = $('#ConfirmPassword').val();
+                
+                if (password !== confirmPassword) {
+                    e.preventDefault();
+                    $('#confirmPasswordError').text('Şifreler eşleşmiyor.');
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
+} 

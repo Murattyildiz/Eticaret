@@ -1,0 +1,208 @@
+html {
+  font-size: 14px;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* Improved header styling */
+.navbar {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+}
+
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2d6bd6 !important;
+}
+
+/* Card improvements */
+.card {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  border: none;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  margin-bottom: 25px;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  border-top-left-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+  font-weight: 600;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #2d6bd6;
+  border-color: #2d6bd6;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: #1c5bbd;
+  border-color: #1c5bbd;
+}
+
+/* Footer improvements */
+footer {
+  flex-shrink: 0;
+  background-color: #f8f9fa;
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
+  width: 100%;
+}
+
+footer h5 {
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+footer a {
+  color: #6c757d;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+footer a:hover {
+  color: #2d6bd6;
+  text-decoration: none;
+}
+
+/* Service features section */
+.feature-box {
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.feature-box i {
+  font-size: 2.5rem;
+  color: #2d6bd6;
+  margin-bottom: 15px;
+}
+
+.feature-box h5 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+/* Fix for overlapping footer elements */
+footer .row {
+  margin-bottom: 15px;
+}
+
+footer .col-md-4 {
+  margin-bottom: 20px;
+}
+
+/* Form improvements */
+.form-control:focus {
+  border-color: #2d6bd6;
+  box-shadow: 0 0 0 0.2rem rgba(45, 107, 214, 0.25);
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+/* Product listing */
+.product-card {
+  height: 100%;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2d6bd6;
+}
+
+/* Category sidebar */
+.list-group-item.active {
+  background-color: #2d6bd6;
+  border-color: #2d6bd6;
+}
+
+/* Admin panel enhancements */
+.sidebar .nav-link {
+  color: #333;
+  font-weight: 500;
+}
+
+.sidebar .nav-link:hover {
+  color: #2d6bd6;
+}
+
+.admin-card {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.admin-card-header {
+  font-weight: 600;
+}
+
+/* Mobile responsiveness fixes */
+@media (max-width: 768px) {
+  .card-img-top {
+    height: 150px;
+  }
+  
+  footer h5 {
+    margin-top: 20px;
+  }
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}

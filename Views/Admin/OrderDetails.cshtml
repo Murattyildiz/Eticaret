@@ -1,0 +1,165 @@
+@model Eticaret.Models.Order
+
+@{
+    ViewData["Title"] = "Sipariş Detayı";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sipariş Detayı</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="Orders">Siparişler</a></li>
+        <li class="breadcrumb-item active">Sipariş Detayı</li>
+    </ol>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Sipariş Bilgileri
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Sipariş No:</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+                        
+                        <dt class="col-sm-4">Tarih:</dt>
+                        <dd class="col-sm-8">@Model.OrderDate.ToString("dd.MM.yyyy HH:mm")</dd>
+                        
+                        <dt class="col-sm-4">Durum:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-@GetStatusBadgeClass(Model.Status)">
+                                @GetStatusText(Model.Status)
+                            </span>
+                        </dd>
+                        
+                        <dt class="col-sm-4">Toplam Tutar:</dt>
+                        <dd class="col-sm-8">@Model.TotalAmount.ToString("C")</dd>
+                    </dl>
+                    
+                    <form asp-action="UpdateOrderStatus" method="post" class="mt-3">
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="status" class="col-form-label">Durum Güncelle:</label>
+                            </div>
+                            <div class="col-auto">
+                                <select name="status" id="status" class="form-select">
+                                    <option value="Beklemede" selected="@(Model.Status == "Beklemede")">Beklemede</option>
+                                    <option value="İşleniyor" selected="@(Model.Status == "İşleniyor")">İşleniyor</option>
+                                    <option value="Kargoya Verildi" selected="@(Model.Status == "Kargoya Verildi")">Kargoya Verildi</option>
+                                    <option value="Tamamlandı" selected="@(Model.Status == "Tamamlandı")">Tamamlandı</option>
+                                    <option value="İptal Edildi" selected="@(Model.Status == "İptal Edildi")">İptal Edildi</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Güncelle</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-user me-1"></i>
+                    Müşteri Bilgileri
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Ad Soyad:</dt>
+                        <dd class="col-sm-8">@Model.User.Name</dd>
+                        
+                        <dt class="col-sm-4">E-posta:</dt>
+                        <dd class="col-sm-8">@Model.User.Email</dd>
+                        
+                        <dt class="col-sm-4">Telefon:</dt>
+                        <dd class="col-sm-8">@(Model.PhoneNumber ?? Model.User.PhoneNumber ?? "-")</dd>
+                        
+                        <dt class="col-sm-4">Adres:</dt>
+                        <dd class="col-sm-8">@(Model.ShippingAddress ?? Model.User.Address ?? "-")</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-box me-1"></i>
+            Sipariş Ürünleri
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Ürün</th>
+                        <th>Fiyat</th>
+                        <th>Adet</th>
+                        <th>Ara Toplam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderItems)
+                    {
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    @if (!string.IsNullOrEmpty(item.Product.ImageUrl))
+                                    {
+                                        <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="me-2" style="width: 50px; height: 50px; object-fit: cover;" />
+                                    }
+                                    <div>
+                                        <div>@item.Product.Name</div>
+                                        <div class="small text-muted">Ürün ID: @item.ProductId</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@item.UnitPrice.ToString("C")</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.TotalPrice.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">Toplam:</th>
+                        <th>@Model.TotalAmount.ToString("C")</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mb-4">
+        <a asp-action="Orders" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Siparişlere Dön
+        </a>
+    </div>
+</div>
+
+@functions {
+    string GetStatusBadgeClass(string status)
+    {
+        return status?.ToLower() switch
+        {
+            "beklemede" => "warning",
+            "bekliyor" => "warning",
+            "işleniyor" => "info",
+            "hazırlanıyor" => "info",
+            "kargoya verildi" => "primary",
+            "tamamlandı" => "success",
+            "iptal edildi" => "danger",
+            _ => "secondary"
+        };
+    }
+    
+    string GetStatusText(string status)
+    {
+        return string.IsNullOrEmpty(status) ? "Beklemede" : status;
+    }
+} 

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Eticaret Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Eticaret.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+    <style>
+        #layoutSidenav {
+            display: flex;
+            min-height: calc(100vh - 56px);
+        }
+        #layoutSidenav_nav {
+            flex-basis: 225px;
+            flex-shrink: 0;
+            transition: transform .15s ease-in-out;
+            z-index: 1038;
+            transform: translateX(0);
+        }
+        #layoutSidenav_content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-width: 0;
+            flex-grow: 1;
+            min-height: calc(100vh - 56px);
+            margin-left: -225px;
+        }
+        .sb-sidenav-toggled #layoutSidenav_nav {
+            transform: translateX(-225px);
+        }
+        .sb-sidenav-toggled #layoutSidenav_content {
+            margin-left: 0;
+        }
+        .sb-nav-fixed .sb-topnav {
+            z-index: 1039;
+        }
+        .sb-nav-fixed #layoutSidenav #layoutSidenav_nav {
+            width: 225px;
+            height: 100vh;
+            z-index: 1038;
+        }
+        .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
+            padding-top: 56px;
+        }
+        .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
+            padding-left: 225px;
+            top: 56px;
+        }
+        .sb-sidenav {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            flex-wrap: nowrap;
+        }
+        .sb-sidenav .sb-sidenav-menu {
+            flex-grow: 1;
+        }
+        .sb-sidenav .sb-sidenav-footer {
+            padding: 0.75rem;
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <!-- Navbar Brand-->
+        <a class="navbar-brand ps-3" href="#">Eticaret Admin</a>
+        <!-- Sidebar Toggle-->
+        <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+        <!-- Navbar-->
+        <div class="ms-auto">
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" asp-controller="Home" asp-action="Index">Siteye Git</a></li>
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Çıkış Yap</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Ana Sayfa</div>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Dashboard
+                        </a>
+                        
+                        <div class="sb-sidenav-menu-heading">Katalog</div>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Products">
+                            <div class="sb-nav-link-icon"><i class="fas fa-box"></i></div>
+                            Ürünler
+                        </a>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Categories">
+                            <div class="sb-nav-link-icon"><i class="fas fa-sitemap"></i></div>
+                            Kategoriler
+                        </a>
+                        
+                        <div class="sb-sidenav-menu-heading">Satış</div>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Orders">
+                            <div class="sb-nav-link-icon"><i class="fas fa-shopping-cart"></i></div>
+                            Siparişler
+                        </a>
+                        
+                        <div class="sb-sidenav-menu-heading">Kullanıcılar</div>
+                        <a class="nav-link" asp-controller="Admin" asp-action="Users">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Kullanıcılar
+                        </a>
+                    </div>
+                </div>
+                <div class="sb-sidenav-footer">
+                    <div class="small">Giriş yapan:</div>
+                    Admin
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <div class="container-fluid px-4 py-4">
+                    @RenderBody()
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid px-4">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Eticaret 2025</div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script>
+        // Sidebar toggle
+        window.addEventListener('DOMContentLoaded', event => {
+            const sidebarToggle = document.body.querySelector('#sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', event => {
+                    event.preventDefault();
+                    document.body.classList.toggle('sb-sidenav-toggled');
+                    localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+                });
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

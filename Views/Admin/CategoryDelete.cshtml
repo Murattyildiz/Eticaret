@@ -1,0 +1,51 @@
+@model Eticaret.Models.Category
+
+@{
+    ViewData["Title"] = "Kategori Sil";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Kategori Sil</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a asp-action="Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a asp-action="Categories">Kategoriler</a></li>
+        <li class="breadcrumb-item active">Kategori Sil</li>
+    </ol>
+    
+    <div class="card mb-4">
+        <div class="card-header bg-danger text-white">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Silme Onayı
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5>Bu kategoriyi silmek istediğinize emin misiniz?</h5>
+                <p>Bu işlem geri alınamaz ve ilişkili ürünler kategorisiz kalabilir.</p>
+            </div>
+            
+            <dl class="row">
+                <dt class="col-sm-3">Kategori ID</dt>
+                <dd class="col-sm-9">@Model.Id</dd>
+                
+                <dt class="col-sm-3">Kategori Adı</dt>
+                <dd class="col-sm-9">@Model.Name</dd>
+                
+                <dt class="col-sm-3">Açıklama</dt>
+                <dd class="col-sm-9">@(Model.Description ?? "-")</dd>
+            </dl>
+            
+            <form asp-action="CategoryDelete" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Categories" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> İptal Et
+                    </a>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Kategoriyi Sil
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> 

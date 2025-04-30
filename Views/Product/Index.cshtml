@@ -1,0 +1,146 @@
+@model IEnumerable<Eticaret.Models.Product>
+
+@{
+    ViewData["Title"] = "Ürünlerimiz";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Kategoriler</h5>
+            </div>
+            <div class="list-group list-group-flush">
+                <a asp-controller="Product" asp-action="Index" class="list-group-item list-group-item-action @(ViewBag.CurrentCategory == null ? "active" : "")">
+                    Tüm Ürünler
+                </a>
+                @if (ViewBag.Categories != null)
+                {
+                    foreach (var category in ViewBag.Categories)
+                    {
+                        <a asp-controller="Product" asp-action="Index" asp-route-categoryId="@category.Id" 
+                           class="list-group-item list-group-item-action @(ViewBag.CurrentCategory == category.Id ? "active" : "")">
+                            @category.Name
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Filtreler</h5>
+            </div>
+            <div class="card-body">
+                <h6>Fiyat Aralığı</h6>
+                <form method="get" asp-controller="Product" asp-action="Index">
+                    @if (ViewBag.CurrentCategory != null)
+                    {
+                        <input type="hidden" name="categoryId" value="@ViewBag.CurrentCategory" />
+                    }
+                    <div class="row mb-3">
+                        <div class="col">
+                            <input type="number" name="minPrice" class="form-control" placeholder="Min" min="0" value="@ViewBag.MinPrice">
+                        </div>
+                        <div class="col">
+                            <input type="number" name="maxPrice" class="form-control" placeholder="Max" min="0" value="@ViewBag.MaxPrice">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Uygula</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                @{
+                    string categoryName = "Tüm Ürünler";
+                    if (ViewBag.CurrentCategory != null && ViewBag.Categories != null)
+                    {
+                        var categories = ViewBag.Categories as IEnumerable<Eticaret.Models.Category>;
+                        if (categories != null)
+                        {
+                            var currentCategory = categories.FirstOrDefault(c => c.Id == ViewBag.CurrentCategory);
+                            if (currentCategory != null)
+                            {
+                                categoryName = currentCategory.Name;
+                            }
+                        }
+                    }
+                }
+                <h2>@categoryName</h2>
+            </div>
+            <div class="col-md-6 text-end">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sırala
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="@(ViewBag.CurrentCategory != null ? $"?categoryId={ViewBag.CurrentCategory}&sort=price_asc" : "?sort=price_asc")">Fiyat: Düşükten Yükseğe</a></li>
+                        <li><a class="dropdown-item" href="@(ViewBag.CurrentCategory != null ? $"?categoryId={ViewBag.CurrentCategory}&sort=price_desc" : "?sort=price_desc")">Fiyat: Yüksekten Düşüğe</a></li>
+                        <li><a class="dropdown-item" href="@(ViewBag.CurrentCategory != null ? $"?categoryId={ViewBag.CurrentCategory}&sort=name_asc" : "?sort=name_asc")">İsim: A-Z</a></li>
+                        <li><a class="dropdown-item" href="@(ViewBag.CurrentCategory != null ? $"?categoryId={ViewBag.CurrentCategory}&sort=name_desc" : "?sort=name_desc")">İsim: Z-A</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="row">
+                @foreach (var product in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card product-card h-100">
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                            }
+                            else
+                            {
+                                <img src="~/images/no-image.jpg" class="card-img-top" alt="Ürün görseli bulunamadı">
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="card-text flex-grow-1">@(product.Description?.Length > 100 ? product.Description.Substring(0, 100) + "..." : product.Description)</p>
+                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                    <span class="product-price">@product.Price.ToString("C")</span>
+                                    <span class="badge bg-@(product.Stock > 0 ? "success" : "danger")">
+                                        @(product.Stock > 0 ? "Stokta" : "Tükendi")
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="btn btn-sm btn-outline-primary">Detaylar</a>
+                                @if(product.Stock > 0)
+                                {
+                                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@product.Id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-cart-plus"></i> Sepete Ekle
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn btn-sm btn-secondary" disabled>
+                                        <i class="fas fa-cart-plus"></i> Sepete Ekle
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                Bu kategoride henüz ürün bulunmamaktadır.
+            </div>
+        }
+    </div>
+</div> 
