@@ -35,7 +35,7 @@
                     {
                         <tr>
                             <td>@user.Id</td>
-                            <td>@user.Name</td>
+                            <td>@user.FullName</td>
                             <td>@user.Email</td>
                             <td>@(user.PhoneNumber ?? "-")</td>
                             <td>@user.RegisterDate.ToString("dd.MM.yyyy")</td>
@@ -63,7 +63,7 @@
                                                     <dd class="col-sm-8">@user.Id</dd>
 
                                                     <dt class="col-sm-4">Ad Soyad:</dt>
-                                                    <dd class="col-sm-8">@user.Name</dd>
+                                                    <dd class="col-sm-8">@user.FullName</dd>
 
                                                     <dt class="col-sm-4">E-posta:</dt>
                                                     <dd class="col-sm-8">@user.Email</dd>

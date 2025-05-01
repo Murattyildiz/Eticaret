@@ -1,4 +1,4 @@
-@model Eticaret.Models.User
+@model Eticaret.Models.RegisterViewModel
 
 @{
     ViewData["Title"] = "Kayıt Ol";
@@ -6,71 +6,96 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card">
+        <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">Yeni Hesap Oluştur</h4>
             </div>
             <div class="card-body">
                 <form asp-action="Register" method="post" id="registerForm">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="All" class="text-danger"></div>
                     
-                    <div class="row mb-3">
+                    <div class="row g-3">
                         <div class="col-md-6">
-                            <label asp-for="Name" class="form-label">Ad Soyad</label>
-                            <input asp-for="Name" class="form-control" required />
-                            <span asp-validation-for="Name" class="text-danger"></span>
+                            <div class="form-floating">
+                                <input asp-for="FirstName" class="form-control" placeholder=" " required />
+                                <label asp-for="FirstName">Ad</label>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
                         </div>
                         
                         <div class="col-md-6">
-                            <label asp-for="Email" class="form-label">E-posta</label>
-                            <input asp-for="Email" class="form-control" required />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <div class="form-floating">
+                                <input asp-for="LastName" class="form-control" placeholder=" " required />
+                                <label asp-for="LastName">Soyad</label>
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="row mb-3">
+
                         <div class="col-md-6">
-                            <label asp-for="Password" class="form-label">Şifre</label>
-                            <input asp-for="Password" type="password" class="form-control" required />
-                            <span asp-validation-for="Password" class="text-danger"></span>
+                            <div class="form-floating">
+                                <input asp-for="Email" class="form-control" placeholder=" " required />
+                                <label asp-for="Email">E-posta</label>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="PhoneNumber" class="form-control" placeholder=" " />
+                                <label asp-for="PhoneNumber">Telefon</label>
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input asp-for="Password" type="password" class="form-control" placeholder=" " required 
+                                       minlength="6" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$"
+                                       title="Şifre en az 6 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir." />
+                                <label asp-for="Password">Şifre</label>
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                                <div class="form-text">
+                                    Şifre en az 6 karakter uzunluğunda olmalı ve en az bir büyük harf, bir küçük harf ve bir rakam içermelidir.
+                                </div>
+                            </div>
                         </div>
                         
                         <div class="col-md-6">
-                            <label for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
-                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
-                            <span id="confirmPasswordError" class="text-danger"></span>
+                            <div class="form-floating">
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder=" " required />
+                                <label asp-for="ConfirmPassword">Şifre Tekrar</label>
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea asp-for="Address" class="form-control" placeholder=" " style="height: 100px"></textarea>
+                                <label asp-for="Address">Adres</label>
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label asp-for="PhoneNumber" class="form-label">Telefon</label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    <div class="mb-3 mt-3">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                <a href="#">Üyelik sözleşmesini</a> ve <a href="#">Gizlilik Politikasını</a> okudum ve kabul ediyorum.
+                            </label>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label asp-for="Address" class="form-label">Adres</label>
-                        <textarea asp-for="Address" class="form-control" rows="3"></textarea>
-                        <span asp-validation-for="Address" class="text-danger"></span>
-                    </div>
-                    
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="terms" required>
-                        <label class="form-check-label" for="terms">
-                            <a href="#">Üyelik sözleşmesini</a> ve <a href="#">Gizlilik Politikasını</a> okudum ve kabul ediyorum.
-                        </label>
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Kayıt Ol</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-2"></i>Kayıt Ol
+                        </button>
                     </div>
                 </form>
                 
-                <hr />
+                <hr class="my-4" />
                 <div class="text-center">
-                    <p>Zaten hesabınız var mı? <a asp-action="Login">Giriş Yap</a></p>
+                    <p class="mb-0">Zaten hesabınız var mı? <a asp-action="Login" class="text-primary">Giriş Yap</a></p>
                 </div>
             </div>
         </div>
@@ -88,10 +113,27 @@
                 
                 if (password !== confirmPassword) {
                     e.preventDefault();
-                    $('#confirmPasswordError').text('Şifreler eşleşmiyor.');
+                    $('#ConfirmPassword').addClass('is-invalid');
+                    $('#ConfirmPassword').next('.text-danger').text('Şifreler eşleşmiyor.');
                     return false;
                 }
+                
+                // Şifre karmaşıklık kontrolü
+                var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
+                if (!passwordRegex.test(password)) {
+                    e.preventDefault();
+                    $('#Password').addClass('is-invalid');
+                    $('#Password').next('.text-danger').text('Şifre gereksinimleri karşılanmıyor.');
+                    return false;
+                }
+                
                 return true;
+            });
+
+            // Input değiştiğinde hata mesajlarını temizle
+            $('#Password, #ConfirmPassword').on('input', function() {
+                $(this).removeClass('is-invalid');
+                $(this).next('.text-danger').text('');
             });
         });
     </script>

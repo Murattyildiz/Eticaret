@@ -1,14 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eticaret.Models
 {
-    public class User
+    public class RegisterViewModel
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Ad alanı zorunludur")]
         [StringLength(50, ErrorMessage = "Ad en fazla 50 karakter olabilir")]
         [Display(Name = "Ad")]
@@ -24,7 +19,19 @@ namespace Eticaret.Models
         [Display(Name = "E-posta")]
         public string Email { get; set; }
 
-        public string PasswordHash { get; set; }
+        [Required(ErrorMessage = "Şifre alanı zorunludur")]
+        [StringLength(100, ErrorMessage = "Şifre en az {2} karakter uzunluğunda olmalıdır", MinimumLength = 6)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$", 
+            ErrorMessage = "Şifre en az bir büyük harf, bir küçük harf ve bir rakam içermelidir")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Şifre")]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "Şifre tekrar alanı zorunludur")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Şifre Tekrar")]
+        [Compare("Password", ErrorMessage = "Şifreler eşleşmiyor")]
+        public string ConfirmPassword { get; set; }
 
         [Phone(ErrorMessage = "Geçerli bir telefon numarası giriniz")]
         [Display(Name = "Telefon")]
@@ -32,22 +39,5 @@ namespace Eticaret.Models
 
         [Display(Name = "Adres")]
         public string Address { get; set; }
-
-        [Display(Name = "Profil Resmi")]
-        [Column(TypeName = "nvarchar(255)")]
-        public string? ProfilePicture { get; set; }
-
-        [Required]
-        [StringLength(20)]
-        public string Role { get; set; } = "User";
-
-        public DateTime RegisterDate { get; set; } = DateTime.Now;
-
-        // Navigation properties
-        public virtual ICollection<Order> Orders { get; set; }
-        public virtual ICollection<CartItem> CartItems { get; set; }
-
-        // Computed property for full name
-        public string FullName => $"{FirstName} {LastName}";
     }
 } 

@@ -5,7 +5,7 @@
 namespace Eticaret.Migrations
 {
     /// <inheritdoc />
-    public partial class güncelleme2 : Migration
+    public partial class guncelleme1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

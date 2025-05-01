@@ -4,16 +4,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Eticaret</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Eticaret.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Eticaret</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-shopping-bag me-2"></i>Eticaret
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,50 +27,66 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i> Ana Sayfa
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Ürünler</a>
+                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">
+                                <i class="fas fa-box me-1"></i> Ürünler
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="About">Hakkımızda</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="About">
+                                <i class="fas fa-info-circle me-1"></i> Hakkımızda
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Contact">İletişim</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Contact">
+                                <i class="fas fa-envelope me-1"></i> İletişim
+                            </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
                         @if (Context.Session.GetInt32("UserId") != null)
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">
-                                    <i class="fas fa-shopping-cart"></i> Sepet
+                            <li class="nav-item me-2">
+                                <a class="nav-link text-dark position-relative" asp-controller="Cart" asp-action="Index">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        0
+                                        <span class="visually-hidden">Sepetteki ürün sayısı</span>
+                                    </span>
                                 </a>
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-user"></i> @Context.Session.GetString("UserName")
+                                    <i class="fas fa-user-circle me-1"></i> @Context.Session.GetString("UserName")
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile">Profilim</a></li>
-                                    <li><a class="dropdown-item" asp-controller="Order" asp-action="MyOrders">Siparişlerim</a></li>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 rounded-4" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Profile"><i class="fas fa-user me-2"></i>Profilim</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Order" asp-action="MyOrders"><i class="fas fa-shopping-bag me-2"></i>Siparişlerim</a></li>
                                     @if (Context.Session.GetString("UserRole") == "Admin")
                                     {
                                         <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">Admin Paneli</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard"><i class="fas fa-cog me-2"></i>Admin Paneli</a></li>
                                     }
                                     <li><hr class="dropdown-divider"></li>
-                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Logout">Çıkış Yap</a></li>
+                                    <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout"><i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap</a></li>
                                 </ul>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Giriş Yap
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                                <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus me-1"></i> Kayıt Ol
+                                </a>
                             </li>
                         }
                     </ul>
@@ -73,44 +95,59 @@
         </nav>
     </header>
 
-    <main role="main" class="container pb-3">
+    <main role="main" class="container pb-3 flex-grow-1">
         @RenderBody()
     </main>
 
-    <footer class="mt-auto py-3">
+    <footer class="mt-auto py-4">
         <div class="container">
-            <div class="row">
+            <div class="row g-4">
                 <div class="col-md-4">
-                    <h5>Hızlı Erişim</h5>
+                    <h5 class="mb-3">Hızlı Erişim</h5>
                     <ul class="list-unstyled">
-                        <li><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
-                        <li><a asp-controller="Product" asp-action="Index">Ürünler</a></li>
-                        <li><a asp-controller="Home" asp-action="About">Hakkımızda</a></li>
-                        <li><a asp-controller="Home" asp-action="Contact">İletişim</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Index"><i class="fas fa-chevron-right me-2"></i>Ana Sayfa</a></li>
+                        <li class="mb-2"><a asp-controller="Product" asp-action="Index"><i class="fas fa-chevron-right me-2"></i>Ürünler</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="About"><i class="fas fa-chevron-right me-2"></i>Hakkımızda</a></li>
+                        <li class="mb-2"><a asp-controller="Home" asp-action="Contact"><i class="fas fa-chevron-right me-2"></i>İletişim</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>Müşteri Hizmetleri</h5>
+                    <h5 class="mb-3">Müşteri Hizmetleri</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#">Sıkça Sorulan Sorular</a></li>
-                        <li><a href="#">Kargo ve Teslimat</a></li>
-                        <li><a href="#">İade ve Değişim</a></li>
-                        <li><a href="#">Gizlilik Politikası</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-question-circle me-2"></i>Sıkça Sorulan Sorular</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-truck me-2"></i>Kargo ve Teslimat</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-exchange-alt me-2"></i>İade ve Değişim</a></li>
+                        <li class="mb-2"><a href="#"><i class="fas fa-shield-alt me-2"></i>Gizlilik Politikası</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h5>İletişim</h5>
-                    <address>
-                        <strong>Eticaret A.Ş.</strong><br>
-                        İstanbul, Türkiye<br>
-                        <i class="fas fa-phone"></i> <a href="tel:+902121234567">+90 (212) 123 45 67</a><br>
-                        <i class="fas fa-envelope"></i> <a href="mailto:info@eticaret.com">info@eticaret.com</a>
-                    </address>
+                    <h5 class="mb-3">İletişim</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                            İstanbul, Türkiye
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-phone me-2 text-primary"></i>
+                            <a href="tel:+902121234567">+90 (212) 123 45 67</a>
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-envelope me-2 text-primary"></i>
+                            <a href="mailto:info@eticaret.com">info@eticaret.com</a>
+                        </li>
+                    </ul>
+                    <div class="mt-4">
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="text-secondary me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#" class="text-secondary"><i class="fab fa-linkedin fa-lg"></i></a>
+                    </div>
                 </div>
             </div>
+            <hr class="my-4">
             <div class="row">
                 <div class="col text-center">
-                    &copy; 2023 - Eticaret - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
+                    <p class="mb-0">&copy; @DateTime.Now.Year - Eticaret - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a></p>
                 </div>
             </div>
         </div>

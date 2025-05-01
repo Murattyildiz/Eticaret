@@ -4,37 +4,45 @@
 
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card">
+        <div class="card shadow-sm border-0 rounded-4">
             <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">Giriş Yap</h4>
             </div>
             <div class="card-body">
                 <form asp-action="Login" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                     
-                    <div class="mb-3">
-                        <label for="email" class="form-label">E-posta</label>
-                        <input type="email" id="email" name="email" class="form-control" required />
+                    <div class="form-floating mb-3">
+                        <input type="email" id="email" name="email" class="form-control" placeholder=" " required />
+                        <label for="email">E-posta</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" id="password" name="password" class="form-control" placeholder=" " required />
+                        <label for="password">Şifre</label>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="password" class="form-label">Şifre</label>
-                        <input type="password" id="password" name="password" class="form-control" required />
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                        </div>
                     </div>
                     
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="rememberMe" name="rememberMe">
-                        <label class="form-check-label" for="rememberMe">Beni Hatırla</label>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                        </button>
                     </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Giriş Yap</button>
+
+                    <div class="text-end mt-2">
+                        <a href="#" class="text-primary small">Şifremi Unuttum</a>
                     </div>
                 </form>
                 
-                <hr />
+                <hr class="my-4" />
                 <div class="text-center">
-                    <p>Hesabınız yok mu? <a asp-action="Register">Kayıt Ol</a></p>
+                    <p class="mb-0">Hesabınız yok mu? <a asp-action="Register" class="text-primary">Kayıt Ol</a></p>
                 </div>
             </div>
         </div>
